@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Termo de Entrega — Via Única (A4 v4 • Logo por caminho)</title>
+  <style>
+    /* A4, estilo clássico (anos 90), impressão limpa e harmonia visual */
+    @page { size: A4; margin: 15mm; }
+
+    :root{ --ink:#111; --line:#000; --muted:#333; }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    body{font-family: "Times New Roman", Times, serif; color:var(--ink); background:#fff}
+
+    .outer{min-height:100%; display:flex; align-items:flex-start; justify-content:center;}
+    .sheet{width: 100%; max-width: 700px; margin: 18px auto; padding: 16px 24px 14px; border:1px solid var(--line)}
+
+    header{display:flex; align-items:center; gap:16px; padding-bottom:10px; border-bottom:1px solid var(--line)}
+    .logo{width:64px; height:64px; border:1px solid var(--line); display:flex; align-items:center; justify-content:center; overflow:hidden}
+    .logo img{max-width:100%; max-height:100%; object-fit:contain}
+    .title{flex:1; text-align:center}
+    h1{font-size:22px; margin:0 0 2px 0; text-transform:uppercase; letter-spacing:.5px}
+    .sub{font-size:12px; margin-top:2px}
+
+    .form{margin-top:10px; border-bottom:1px dashed var(--line); padding-bottom:10px}
+    .row{display:flex; gap:10px; margin:6px 0}
+    .row .field{flex:1}
+    label{display:block; font-size:12px; color:var(--muted); margin-bottom:3px; font-weight:700}
+    input, textarea{width:100%; border:1px solid var(--line); padding:6px 8px; font-size:14px; font-family:inherit}
+    textarea{min-height:68px; resize:vertical}
+
+    .decl{margin-top:12px; line-height:1.6; font-size:16px; text-align:justify}
+    .decl strong{font-weight:bold}
+
+    .signatures{margin-top:18px}
+    .sig-grid{display:grid; grid-template-columns:1fr 1fr; gap:24px}
+    .sig-box{border:1px solid var(--line); padding:12px; min-height:168px}
+    .sig-title{font-weight:bold; text-transform:uppercase; font-size:14px; margin-bottom:8px; text-align:center}
+
+    .line{border-bottom:1px solid var(--line); height:26px; margin-top:18px}
+    .below{font-size:12px; text-align:center; margin-top:3px}
+
+    .stamp{border:1px dashed var(--line); height:84px; margin-top:16px; display:flex; align-items:center; justify-content:center; font-size:12px; text-transform:uppercase; font-weight:700}
+
+    footer{display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding-top:8px; border-top:1px solid var(--line); font-size:12px}
+
+    .actions{margin:12px auto 0; display:flex; gap:8px; justify-content:center}
+    button{font-family:inherit; border:1px solid var(--line); background:#fff; padding:8px 12px; cursor:pointer}
+
+    /* Impressão */
+    .print-only{display:none}
+    @media print{
+      .actions{display:none}
+      .sheet{border:0; margin:0; padding:0}
+      input, textarea{border-color:transparent}
+      .print-only{display:inline}
+    }
+  </style>
+</head>
+<body>
+  <div class="outer">
+    <section class="sheet">
+      <header>
+        <div class="logo" title="Substitua o src abaixo pelo caminho do seu logo (JPG/PNG) no repositório">
+          <!-- DICA: atualize o atributo src com o caminho do seu repositório, ex.: ./assets/logo-system.jpg -->
+          <img id="logo" alt="System Engenharia" src="./assets/logo-system.jpg" />
+        </div>
+        <div class="title">
+          <h1>Termo de Entrega</h1>
+          <div class="sub">System Engenharia → Patrimar • <span id="dataHoje"></span> • Nº <span id="numTermo"></span></div>
+        </div>
+      </header>
+
+      <div class="form">
+        <div class="row">
+          <div class="field">
+            <label><strong>Empreendimento / Obra</strong></label>
+            <input id="obra" placeholder="Ex.: Atlântico Golf / Riserva Golfe" />
+          </div>
+          <div class="field" style="max-width:180px">
+            <label><strong>Bloco / Edifício</strong></label>
+            <input id="bloco" placeholder="Ex.: Bloco 2" />
+          </div>
+          <div class="field" style="max-width:180px">
+            <label><strong>Unidade (Apto/Casa)</strong></label>
+            <input id="unid" placeholder="Ex.: 101" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label><strong>Serviços entregues (descrição breve)</strong></label>
+            <textarea id="escopo" placeholder="Ex.: metais instalados e testados (torneiras, misturadores e acabamentos)"></textarea>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label><strong>Observações</strong></label>
+            <input id="obs" placeholder="Ex.: Conforme projeto e memorial" />
+          </div>
+        </div>
+      </div>
+
+      <div class="decl" id="declaracao"></div>
+
+      <section class="signatures">
+        <div class="sig-grid">
+          <div class="sig-box">
+            <div class="sig-title">Contratante (Patrimar)</div>
+            <div class="line"></div>
+            <div class="below">ASSINATURA</div>
+            <div class="line"></div>
+            <div class="below">NOME LEGÍVEL</div>
+            <div class="line"></div>
+            <div class="below">CPF / RG</div>
+            <div class="line"></div>
+            <div class="below">CARGO / SETOR</div>
+            <div class="line"></div>
+            <div class="below">DATA</div>
+            <div class="stamp">CARIMBO — CONTRATANTE</div>
+          </div>
+          <div class="sig-box">
+            <div class="sig-title">Contratada (System Engenharia)</div>
+            <div class="line"></div>
+            <div class="below">ASSINATURA</div>
+            <div class="line"></div>
+            <div class="below">NOME LEGÍVEL</div>
+            <div class="line"></div>
+            <div class="below">CPF / RG</div>
+            <div class="line"></div>
+            <div class="below">CARGO</div>
+            <div class="line"></div>
+            <div class="below">DATA</div>
+            <div class="stamp">CARIMBO — CONTRATADA</div>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <div>Gerado em <span id="gerado"></span></div>
+        <div class="print-only">(Via única — imprima 2 cópias)</div>
+      </footer>
+
+      <div class="actions">
+        <button onclick="window.print()">Imprimir / Salvar PDF</button>
+        <button onclick="limpar()">Limpar</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (function(){
+      const pad = n=>String(n).padStart(2,'0');
+      const now = new Date();
+      const fmtLong = new Intl.DateTimeFormat('pt-BR',{dateStyle:'full'});
+      const fmtShort = new Intl.DateTimeFormat('pt-BR',{dateStyle:'medium', timeStyle:'short'});
+      const numero = `TERMO-${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}`;
+
+      document.getElementById('dataHoje').textContent = fmtLong.format(now);
+      document.getElementById('numTermo').textContent = numero;
+      document.getElementById('gerado').textContent = fmtShort.format(now);
+
+      function montar(){
+        const obra = document.getElementById('obra').value.trim();
+        const bloco = document.getElementById('bloco').value.trim();
+        const unid  = document.getElementById('unid').value.trim();
+        const esc   = document.getElementById('escopo').value.trim();
+        const obs   = document.getElementById('obs').value.trim();
+
+        const local = [unid?`apartamento ${unid}`:null, bloco?`${bloco}`:null].filter(Boolean).join(' — ');
+        const obraTxt = obra?` no empreendimento <strong>${obra}</strong>`:"";
+        const obsTxt  = obs?` ${obs}`:"";
+        const escTxt  = esc?`<strong>${esc}</strong>`:"escopo descrito";
+
+        const frase = `Declaro que, na data de <strong>${fmtLong.format(new Date())}</strong>, a <strong>System Engenharia</strong> entregou à <strong>Patrimar</strong> os serviços de ${escTxt}${local?` do ${local}`:""}${obraTxt}.${obsTxt}`;
+        document.getElementById('declaracao').innerHTML = frase;
+      }
+
+      ['obra','bloco','unid','escopo','obs'].forEach(id=>{
+        document.getElementById(id).addEventListener('input', montar, {passive:true});
+      });
+
+      montar();
+    })();
+
+    function limpar(){
+      ['obra','bloco','unid','escopo','obs'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+      const fmtLong = new Intl.DateTimeFormat('pt-BR',{dateStyle:'full'});
+      document.getElementById('declaracao').innerHTML = `Declaro que, na data de <strong>${fmtLong.format(new Date())}</strong>, a <strong>System Engenharia</strong> entregou à <strong>Patrimar</strong> os serviços descritos acima.`;
+    }
+  </script>
+</body>
+</html>
