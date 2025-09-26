@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Termo de Entrega — Via Única (A4 v15 • Obra em Destaque)</title>
+  <title>Termo de Entrega — Via Única (A4 v16 • Título fix + Obs)</title>
   <style>
     @page { size: A4; margin: 15mm; }
     :root{ --ink:#111; --muted:#444; --hair:#00000026; --tag:#0b2a4a; }
@@ -14,13 +14,14 @@
     .outer{min-height:100%; display:flex; align-items:flex-start; justify-content:center;}
     .sheet{width: 100%; max-width: 720px; margin: 18px auto; padding: 4px 8px 8px;}
 
-    /* Cabeçalho minimalista: logo + título + data/código */
-    header{display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:16px; padding:6px 0 10px; border-bottom:1px solid var(--hair)}
+    /* Cabeçalho minimalista: logo + título (sem quebra) + meta sutil logo abaixo */
+    header{display:grid; grid-template-columns:auto 1fr auto; grid-auto-rows:auto; align-items:center; gap:16px; padding:6px 0 8px; border-bottom:1px solid var(--hair)}
     .logo{height:64px; display:flex; align-items:center}
     .logo img{max-height:64px; width:auto; object-fit:contain; display:block}
     .title{text-align:center}
-    h1{font-size:26px; margin:0; text-transform:uppercase; letter-spacing:.4px}
-    .meta{font-size:12px; text-align:right; line-height:1.3; color:var(--muted)}
+    h1{font-size:26px; margin:0; text-transform:uppercase; letter-spacing:.4px; white-space:nowrap}
+    /* meta ocupa a linha inteira logo abaixo do conjunto */
+    .meta{grid-column:1/-1; margin-top:4px; font-size:12px; text-align:center; line-height:1.4; color:var(--muted)}
     .meta .code{font-variant-numeric: tabular-nums}
 
     /* Faixa de destaque da OBRA */
@@ -37,6 +38,9 @@
 
     .decl{margin-top:14px; line-height:1.75; font-size:18px; text-align:justify}
     .decl strong{font-weight:bold}
+
+    .obs-out{margin-top:10px; font-size:14px; color:var(--muted);}
+    .obs-out b{color:var(--ink)}
 
     .signatures{margin-top:18px}
     .sig-grid{display:grid; grid-template-columns:1fr 1fr; gap:28px; page-break-inside:avoid}
@@ -63,11 +67,6 @@
       /* Texto maior e mais confortável para A4 */
       .decl{font-size:19px; line-height:1.9}
     }
-      .sheet{margin:0; padding:0}
-      input, textarea{border-color:transparent}
-      .print-only{display:inline}
-      .sig-grid{break-inside:avoid}
-    }
   </style>
 </head>
 <body>
@@ -78,9 +77,10 @@
         <div class="title">
           <h1>Termo de Entrega</h1>
         </div>
+        <div><!-- espaço para manter a grade de 3 colunas equilibrada --></div>
         <div class="meta">
+          <div class="code"><span id="codigoDoc"></span> • Nº <span id="numTermo"></span></div>
           <div><span id="dataHoje"></span></div>
-          <div class="code">Nº <span id="numTermo"></span></div>
         </div>
       </header>
 
@@ -115,6 +115,7 @@
       </div>
 
       <div class="decl" id="declaracao"></div>
+      <div class="obs-out" id="obsOut" hidden></div>
 
       <section class="signatures">
         <div class="sig-grid">
@@ -157,10 +158,12 @@
       const now = new Date();
       const fmtLong = new Intl.DateTimeFormat('pt-BR',{dateStyle:'full'});
       const fmtShort = new Intl.DateTimeFormat('pt-BR',{dateStyle:'medium', timeStyle:'short'});
-      const numero = `TERMO-${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}`;
+      const CODIGO = 'TERMO';
+      const numero = `${CODIGO}-${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}`;
 
       document.getElementById('dataHoje').textContent = fmtLong.format(now);
       document.getElementById('numTermo').textContent = numero;
+      document.getElementById('codigoDoc').textContent = `Código: ${CODIGO}`;
       document.getElementById('gerado').textContent = fmtShort.format(now);
 
       function montar(){
@@ -180,14 +183,24 @@
 
         const obraTxt = obra ? ` no empreendimento <strong>${obra}</strong>` : '';
         const escTxt  = esc  ? `<strong>${esc}</strong>` : 'escopo descrito';
-        const obsTxt  = obs  ? ` ${obs}` : '';
 
         const frase = `Declaro que, na data de <strong>${fmtLong.format(new Date())}</strong>, os serviços de ${escTxt}${localTxt}${obraTxt} foram entregues conforme descrito.`;
         document.getElementById('declaracao').innerHTML = frase;
+
+        // Observações: exibidas abaixo da declaração, apenas se houver conteúdo
+        const obsOut = document.getElementById('obsOut');
+        if (obs){
+          obsOut.innerHTML = `<b>Observações:</b> ${obs}`;
+          obsOut.hidden = false;
+        } else {
+          obsOut.hidden = true;
+          obsOut.textContent = '';
+        }
       }
 
       ['obra','bloco','area','escopo','obs'].forEach(id=>{
-        document.getElementById(id).addEventListener('input', montar, {passive:true});
+        const el = document.getElementById(id);
+        el.addEventListener('input', montar, {passive:true});
       });
 
       montar();
@@ -198,6 +211,8 @@
       const fmtLong = new Intl.DateTimeFormat('pt-BR',{dateStyle:'full'});
       document.getElementById('obraOut').textContent = '—';
       document.getElementById('declaracao').innerHTML = `Declaro que, na data de <strong>${fmtLong.format(new Date())}</strong>, os serviços descritos acima foram entregues.`;
+      const obsOut = document.getElementById('obsOut');
+      obsOut.hidden = true; obsOut.textContent = '';
     }
   </script>
 </body>
