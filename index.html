@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Termo de Entrega — Via Única (A4 v4 • Logo por caminho)</title>
+  <title>Termo de Entrega — Via Única (A4 v5 • Logo +60% & Unidade NA)</title>
   <style>
     /* A4, estilo clássico (anos 90), impressão limpa e harmonia visual */
     @page { size: A4; margin: 15mm; }
@@ -17,7 +17,8 @@
     .sheet{width: 100%; max-width: 700px; margin: 18px auto; padding: 16px 24px 14px; border:1px solid var(--line)}
 
     header{display:flex; align-items:center; gap:16px; padding-bottom:10px; border-bottom:1px solid var(--line)}
-    .logo{width:64px; height:64px; border:1px solid var(--line); display:flex; align-items:center; justify-content:center; overflow:hidden}
+    /* LOGO +60%: de 64x64 para ~102x102 */
+    .logo{width:104px; height:104px; border:1px solid var(--line); display:flex; align-items:center; justify-content:center; overflow:hidden}
     .logo img{max-width:100%; max-height:100%; object-fit:contain}
     .title{flex:1; text-align:center}
     h1{font-size:22px; margin:0 0 2px 0; text-transform:uppercase; letter-spacing:.5px}
@@ -55,6 +56,8 @@
       .sheet{border:0; margin:0; padding:0}
       input, textarea{border-color:transparent}
       .print-only{display:inline}
+      /* Ocultar campo Unidade no documento impresso quando estiver vazio */
+      #fieldUnid[data-empty="true"]{display:none}
     }
   </style>
 </head>
@@ -62,7 +65,7 @@
   <div class="outer">
     <section class="sheet">
       <header>
-        <div class="logo" title="Substitua o src abaixo pelo caminho do seu logo (JPG/PNG) no repositório">
+        <div class="logo" title="Atualize o src abaixo com o caminho do seu logo (JPG/PNG) no repositório">
           <!-- DICA: atualize o atributo src com o caminho do seu repositório, ex.: ./assets/logo-system.jpg -->
           <img id="logo" alt="System Engenharia" src="./assets/logo-system.jpg" />
         </div>
@@ -82,7 +85,7 @@
             <label><strong>Bloco / Edifício</strong></label>
             <input id="bloco" placeholder="Ex.: Bloco 2" />
           </div>
-          <div class="field" style="max-width:180px">
+          <div id="fieldUnid" class="field" style="max-width:180px">
             <label><strong>Unidade (Apto/Casa)</strong></label>
             <input id="unid" placeholder="Ex.: 101" />
           </div>
@@ -167,7 +170,13 @@
         const esc   = document.getElementById('escopo').value.trim();
         const obs   = document.getElementById('obs').value.trim();
 
-        const local = [unid?`apartamento ${unid}`:null, bloco?`${bloco}`:null].filter(Boolean).join(' — ');
+        // Marcação para impressão: se unidade estiver vazia, oculta o campo no documento impresso
+        const fieldUnid = document.getElementById('fieldUnid');
+        fieldUnid.setAttribute('data-empty', unid ? 'false' : 'true');
+
+        // Texto de unidade: se vazio, usa (não aplicável)
+        const unidTxt = unid ? `apartamento ${unid}` : `apartamento (não aplicável)`;
+        const local = [unidTxt, bloco?`${bloco}`:null].filter(Boolean).join(' — ');
         const obraTxt = obra?` no empreendimento <strong>${obra}</strong>`:"";
         const obsTxt  = obs?` ${obs}`:"";
         const escTxt  = esc?`<strong>${esc}</strong>`:"escopo descrito";
@@ -187,7 +196,10 @@
       ['obra','bloco','unid','escopo','obs'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
       const fmtLong = new Intl.DateTimeFormat('pt-BR',{dateStyle:'full'});
       document.getElementById('declaracao').innerHTML = `Declaro que, na data de <strong>${fmtLong.format(new Date())}</strong>, a <strong>System Engenharia</strong> entregou à <strong>Patrimar</strong> os serviços descritos acima.`;
+      // atualiza o estado de impressão do campo Unidade
+      document.getElementById('fieldUnid').setAttribute('data-empty','true');
     }
   </script>
 </body>
 </html>
+
