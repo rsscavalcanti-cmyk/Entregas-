@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Termo de Entrega — Via Única (A4 v16 • Título fix + Obs)</title>
+  <title>Termo de Entrega — Via Única (A4 v17 • no/na automático + Obs)</title>
   <style>
     @page { size: A4; margin: 15mm; }
     :root{ --ink:#111; --muted:#444; --hair:#00000026; --tag:#0b2a4a; }
@@ -176,10 +176,31 @@
         // Atualiza destaque Obra
         document.getElementById('obraOut').textContent = obra || '—';
 
+        // ===== Preposição no/na por termo =====
+        const femHints = [
+          'academia','portaria','cobertura','recepção','recepcao','casa','torre',
+          'área','area','laje','garagem','prumada','rede','sala','central',
+          'elevatória','elevatoria','cisterna','bancada','escada','copa','cozinha'
+        ];
+        const femSuffix = /(a|á|ção|são|xão|gem|dade|tude|agem|ice|ose|ese|ura|ite\b)$/i;
+        const startsWithPrep = /^(no|na|em)\s/i;
+
+        const withPrep = (term) => {
+          const t = term.trim();
+          if (!t) return '';
+          if (startsWithPrep.test(t)) return t;            // usuário já pôs a preposição
+          const base = t.toLowerCase();
+          const isFeminine = femHints.some(h => base.startsWith(h)) || femSuffix.test(base);
+          return (isFeminine ? 'na ' : 'no ') + t;
+        };
+
         const partes = [];
-        if (bloco) partes.push(`${bloco}`);
-        if (area)  partes.push(`${area}`);
-        const localTxt = partes.length ? ` no ${partes.join(', ')}` : '';
+        if (bloco) partes.push(bloco);
+        if (area)  partes.push(area);
+
+        // Aplica preposição em cada parte: ex. "na Academia, no Subsolo"
+        const locParts = partes.map(withPrep).filter(Boolean);
+        const localTxt = locParts.length ? ` ${locParts.join(', ')}` : '';
 
         const obraTxt = obra ? ` no empreendimento <strong>${obra}</strong>` : '';
         const escTxt  = esc  ? `<strong>${esc}</strong>` : 'escopo descrito';
@@ -187,7 +208,7 @@
         const frase = `Declaro que, na data de <strong>${fmtLong.format(new Date())}</strong>, os serviços de ${escTxt}${localTxt}${obraTxt} foram entregues conforme descrito.`;
         document.getElementById('declaracao').innerHTML = frase;
 
-        // Observações: exibidas abaixo da declaração, apenas se houver conteúdo
+        // Observações (apenas se houver)
         const obsOut = document.getElementById('obsOut');
         if (obs){
           obsOut.innerHTML = `<b>Observações:</b> ${obs}`;
@@ -217,3 +238,4 @@
   </script>
 </body>
 </html>
+
