@@ -12,30 +12,30 @@
     body{font-family: "Times New Roman", Times, serif; color:var(--ink); background:#fff}
 
     .outer{min-height:100%; display:flex; align-items:flex-start; justify-content:center;}
-    .sheet{width: 100%; max-width: 700px; margin: 18px auto; padding: 4px 8px 8px;}
+    .sheet{width: 100%; max-width: 720px; margin: 18px auto; padding: 4px 8px 8px;}
 
     /* Cabeçalho minimalista: logo + título + data/código */
     header{display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:16px; padding:6px 0 10px; border-bottom:1px solid var(--hair)}
     .logo{height:64px; display:flex; align-items:center}
     .logo img{max-height:64px; width:auto; object-fit:contain; display:block}
     .title{text-align:center}
-    h1{font-size:22px; margin:0; text-transform:uppercase; letter-spacing:.4px}
+    h1{font-size:26px; margin:0; text-transform:uppercase; letter-spacing:.4px}
     .meta{font-size:12px; text-align:right; line-height:1.3; color:var(--muted)}
     .meta .code{font-variant-numeric: tabular-nums}
 
     /* Faixa de destaque da OBRA */
-    .obra-highlight{display:flex; align-items:center; gap:8px; padding:10px 0;}
+    .obra-highlight{display:flex; align-items:center; gap:8px; padding:10px 0;} 
     .obra-label{font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
     .obra-tag{border:1px solid var(--hair); padding:6px 10px; font-size:16px; font-weight:700; letter-spacing:.02em;}
 
-    .form{margin-top:6px; border-bottom:1px dashed var(--hair); padding-bottom:10px}
+    .form{margin-top:6px; border-bottom:1px dashed var(--hair); padding-bottom:10px} 
     .row{display:flex; gap:10px; margin:6px 0}
     .row .field{flex:1}
     input, textarea{width:100%; border:1px solid var(--hair); padding:8px 10px; font-size:14px; font-family:inherit; outline:none}
     input:focus, textarea:focus{border-color:#00000055}
     textarea{min-height:68px; resize:vertical}
 
-    .decl{margin-top:10px; line-height:1.6; font-size:16px; text-align:justify}
+    .decl{margin-top:14px; line-height:1.75; font-size:18px; text-align:justify}
     .decl strong{font-weight:bold}
 
     .signatures{margin-top:18px}
@@ -54,6 +54,15 @@
     .print-only{display:none}
     @media print{
       .actions{display:none}
+      .sheet{margin:0; padding:0}
+      input, textarea{border-color:transparent}
+      .print-only{display:inline}
+      .sig-grid{break-inside:avoid}
+      /* Só no PDF: esconder seções entre o título e o texto */
+      .obra-highlight, .form{display:none !important}
+      /* Texto maior e mais confortável para A4 */
+      .decl{font-size:19px; line-height:1.9}
+    }
       .sheet{margin:0; padding:0}
       input, textarea{border-color:transparent}
       .print-only{display:inline}
