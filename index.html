@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Termo de Entrega — Via Única (A4 v5 • Logo +60% & Unidade NA)</title>
+  <title>Termo de Entrega — Via Única (A4 v10 • Revisão com IA)</title>
   <style>
     /* A4, estilo clássico (anos 90), impressão limpa e harmonia visual */
     @page { size: A4; margin: 15mm; }
@@ -17,7 +17,6 @@
     .sheet{width: 100%; max-width: 700px; margin: 18px auto; padding: 16px 24px 14px; border:1px solid var(--line)}
 
     header{display:flex; align-items:center; gap:16px; padding-bottom:10px; border-bottom:1px solid var(--line)}
-    /* LOGO +60%: de 64x64 para ~102x102 */
     .logo{width:104px; height:104px; border:1px solid var(--line); display:flex; align-items:center; justify-content:center; overflow:hidden}
     .logo img{max-width:100%; max-height:100%; object-fit:contain}
     .title{flex:1; text-align:center}
@@ -27,8 +26,8 @@
     .form{margin-top:10px; border-bottom:1px dashed var(--line); padding-bottom:10px}
     .row{display:flex; gap:10px; margin:6px 0}
     .row .field{flex:1}
-    label{display:block; font-size:12px; color:var(--muted); margin-bottom:3px; font-weight:700}
-    input, textarea{width:100%; border:1px solid var(--line); padding:6px 8px; font-size:14px; font-family:inherit}
+    /* Inputs sem labels; apenas placeholders */
+    input, textarea{width:100%; border:1px solid var(--line); padding:8px 10px; font-size:14px; font-family:inherit}
     textarea{min-height:68px; resize:vertical}
 
     .decl{margin-top:12px; line-height:1.6; font-size:16px; text-align:justify}
@@ -56,8 +55,6 @@
       .sheet{border:0; margin:0; padding:0}
       input, textarea{border-color:transparent}
       .print-only{display:inline}
-      /* Ocultar campo Unidade no documento impresso quando estiver vazio */
-      #fieldUnid[data-empty="true"]{display:none}
     }
   </style>
 </head>
@@ -66,7 +63,7 @@
     <section class="sheet">
       <header>
         <div class="logo" title="Atualize o src abaixo com o caminho do seu logo (JPG/PNG) no repositório">
-          <!-- DICA: atualize o atributo src com o caminho do seu repositório, ex.: ./assets/logo-system.jpg -->
+          <!-- Atualize o caminho do logo, ex.: ./assets/logo-system.jpg -->
           <img id="logo" alt="System Engenharia" src="./assets/logo-system.jpg" />
         </div>
         <div class="title">
@@ -78,28 +75,23 @@
       <div class="form">
         <div class="row">
           <div class="field">
-            <label><strong>Empreendimento / Obra</strong></label>
-            <input id="obra" placeholder="Ex.: Atlântico Golf / Riserva Golfe" />
+            <input id="obra" placeholder="Empreendimento / Obra — Ex.: Atlântico Golf" />
           </div>
-          <div class="field" style="max-width:180px">
-            <label><strong>Bloco / Edifício</strong></label>
-            <input id="bloco" placeholder="Ex.: Bloco 2" />
+          <div class="field" style="max-width:220px">
+            <input id="bloco" placeholder="Bloco / Torre / Local — Ex.: Torre B / Subsolo / Reservatório" />
           </div>
-          <div id="fieldUnid" class="field" style="max-width:180px">
-            <label><strong>Unidade (Apto/Casa)</strong></label>
-            <input id="unid" placeholder="Ex.: 101" />
+          <div class="field" style="max-width:220px">
+            <input id="area" placeholder="Área / Unidade / Ambiente (opcional) — Ex.: Casa de Máquinas / Apto 101" />
           </div>
         </div>
         <div class="row">
           <div class="field">
-            <label><strong>Serviços entregues (descrição breve)</strong></label>
-            <textarea id="escopo" placeholder="Ex.: metais instalados e testados (torneiras, misturadores e acabamentos)"></textarea>
+            <textarea id="escopo" placeholder="Serviços entregues (descrição breve) — Ex.: redes de recalque de água potável para os blocos 1, 2 e 3"></textarea>
           </div>
         </div>
         <div class="row">
           <div class="field">
-            <label><strong>Observações</strong></label>
-            <input id="obs" placeholder="Ex.: Conforme projeto e memorial" />
+            <input id="obs" placeholder="Observações — Ex.: Conforme projeto e memorial" />
           </div>
         </div>
       </div>
@@ -144,6 +136,19 @@
         <div class="print-only">(Via única — imprima 2 cópias)</div>
       </footer>
 
+      <!-- Revisão com IA (OpenAI) -->
+      <section style="margin-top:14px; border:1px solid var(--line); padding:10px">
+        <div style="font-weight:bold; text-transform:uppercase; font-size:13px; margin-bottom:6px">Revisar texto com IA (opcional)</div>
+        <div style="font-size:12px; color:var(--muted); margin-bottom:8px">Corrige gramática e clareza do parágrafo de declaração em PT‑BR. <em>Use chave de API apenas para testes — em produção utilize um backend/proxy.</em></div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:8px">
+          <input id="openaiKey" type="password" placeholder="OPENAI_API_KEY (temporário)" style="flex:1; min-width:260px; border:1px solid var(--line); padding:6px 8px; font-family:inherit"/>
+          <button id="btnIaCorrigir" style="border:1px solid var(--line); background:#fff; padding:8px 12px; cursor:pointer">Corrigir com IA</button>
+          <button id="btnIaAplicar" disabled style="border:1px solid var(--line); background:#fff; padding:8px 12px; cursor:pointer">Substituir no documento</button>
+        </div>
+        <textarea id="iaSaida" placeholder="A versão revisada aparecerá aqui" style="width:100%; min-height:80px; border:1px solid var(--line); padding:8px 10px; font-family:inherit"></textarea>
+        <div id="iaStatus" style="font-size:12px; color:var(--muted); margin-top:6px"></div>
+      </section>
+
       <div class="actions">
         <button onclick="window.print()">Imprimir / Salvar PDF</button>
         <button onclick="limpar()">Limpar</button>
@@ -164,28 +169,27 @@
       document.getElementById('gerado').textContent = fmtShort.format(now);
 
       function montar(){
-        const obra = document.getElementById('obra').value.trim();
-        const bloco = document.getElementById('bloco').value.trim();
-        const unid  = document.getElementById('unid').value.trim();
+        const obra  = document.getElementById('obra').value.trim();
+        const bloco = document.getElementById('bloco').value.trim(); // pode conter "Bloco 2", "Torre B", "Subsolo", "Reservatório" etc.
+        const area  = document.getElementById('area').value.trim();
         const esc   = document.getElementById('escopo').value.trim();
         const obs   = document.getElementById('obs').value.trim();
 
-        // Marcação para impressão: se unidade estiver vazia, oculta o campo no documento impresso
-        const fieldUnid = document.getElementById('fieldUnid');
-        fieldUnid.setAttribute('data-empty', unid ? 'false' : 'true');
+        // Partes de localização SEM prefixos automáticos: usamos exatamente o que o usuário digitar
+        const partes = [];
+        if (bloco) partes.push(`${bloco}`);
+        if (area)  partes.push(`${area}`);
+        const localTxt = partes.length ? ` no ${partes.join(', ')}` : '';
 
-        // Texto de unidade: se vazio, usa (não aplicável)
-        const unidTxt = unid ? `apartamento ${unid}` : `apartamento (não aplicável)`;
-        const local = [unidTxt, bloco?`${bloco}`:null].filter(Boolean).join(' — ');
-        const obraTxt = obra?` no empreendimento <strong>${obra}</strong>`:"";
-        const obsTxt  = obs?` ${obs}`:"";
-        const escTxt  = esc?`<strong>${esc}</strong>`:"escopo descrito";
+        const obraTxt = obra ? ` no empreendimento <strong>${obra}</strong>` : '';
+        const escTxt  = esc  ? `<strong>${esc}</strong>` : 'escopo descrito';
+        const obsTxt  = obs  ? ` ${obs}` : '';
 
-        const frase = `Declaro que, na data de <strong>${fmtLong.format(new Date())}</strong>, a <strong>System Engenharia</strong> entregou à <strong>Patrimar</strong> os serviços de ${escTxt}${local?` do ${local}`:""}${obraTxt}.${obsTxt}`;
+        const frase = `Declaro que, na data de <strong>${fmtLong.format(new Date())}</strong>, a <strong>System Engenharia</strong> entregou à <strong>Patrimar</strong> os serviços de ${escTxt}${localTxt}${obraTxt}.${obsTxt}`;
         document.getElementById('declaracao').innerHTML = frase;
       }
 
-      ['obra','bloco','unid','escopo','obs'].forEach(id=>{
+      ['obra','bloco','area','escopo','obs'].forEach(id=>{
         document.getElementById(id).addEventListener('input', montar, {passive:true});
       });
 
@@ -193,13 +197,53 @@
     })();
 
     function limpar(){
-      ['obra','bloco','unid','escopo','obs'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+      ['obra','bloco','area','escopo','obs'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
       const fmtLong = new Intl.DateTimeFormat('pt-BR',{dateStyle:'full'});
       document.getElementById('declaracao').innerHTML = `Declaro que, na data de <strong>${fmtLong.format(new Date())}</strong>, a <strong>System Engenharia</strong> entregou à <strong>Patrimar</strong> os serviços descritos acima.`;
-      // atualiza o estado de impressão do campo Unidade
-      document.getElementById('fieldUnid').setAttribute('data-empty','true');
     }
+  // === Integração OpenAI: Revisão da declaração ===
+    async function revisarComIA(){
+      const key = document.getElementById('openaiKey').value.trim();
+      const status = document.getElementById('iaStatus');
+      const out = document.getElementById('iaSaida');
+      if(!key){ status.textContent = 'Informe sua OPENAI_API_KEY para testar localmente.'; return; }
+      const html = document.getElementById('declaracao').innerHTML;
+      // Converte HTML simples para texto plano mantendo negritos como ** **
+      const tmp = document.createElement('div'); tmp.innerHTML = html;
+      tmp.querySelectorAll('strong').forEach(el=>{ el.outerHTML = `**${el.textContent}**`; });
+      const plain = tmp.textContent;
+      status.textContent = 'Enviando para o modelo...';
+      try{
+        const resp = await fetch('https://api.openai.com/v1/responses',{
+          method:'POST',
+          headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            input: `Revise o texto a seguir (português do Brasil), corrija gramática e fluidez, mantenha sentido jurídico e devolva APENAS o parágrafo revisado, sem comentários. Texto:
+
+${plain}`
+          })
+        });
+        if(!resp.ok){ const t = await resp.text(); throw new Error(`Erro ${resp.status}: ${t}`); }
+        const data = await resp.json();
+        // Responses API retorna output_text agregado em alguns SDKs; aqui tentamos campos comuns
+        const revised = (data.output_text) || (data.output && data.output[0] && data.output[0].content && data.output[0].content[0] && data.output[0].content[0].text) || (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '';
+        out.value = revised.trim();
+        document.getElementById('btnIaAplicar').disabled = !out.value;
+        status.textContent = 'Revisão concluída. Confira e clique em "Substituir no documento" se estiver ok.';
+      }catch(e){
+        status.textContent = 'Falha ao consultar o modelo: '+ e.message;
+      }
+    }
+    function aplicarRevisao(){
+      const out = document.getElementById('iaSaida').value.trim();
+      if(!out) return;
+      // Mantém negritos simples transformando **texto** em <strong>
+      const html = out.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+      document.getElementById('declaracao').innerHTML = html;
+    }
+    document.getElementById('btnIaCorrigir').addEventListener('click', revisarComIA);
+    document.getElementById('btnIaAplicar').addEventListener('click', aplicarRevisao);
   </script>
 </body>
 </html>
-
