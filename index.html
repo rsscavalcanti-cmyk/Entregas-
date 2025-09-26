@@ -3,59 +3,54 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Termo de Entrega — Via Única (A4 v14 • Elegante)</title>
+  <title>Termo de Entrega — Via Única (A4 v15 • Obra em Destaque)</title>
   <style>
-    /* A4, estilo clássico, impressão limpa */
     @page { size: A4; margin: 15mm; }
-
-    :root{
-      --ink:#111; --line:#000; --muted:#333; --hair:#00000026;
-    }
+    :root{ --ink:#111; --muted:#444; --hair:#00000026; --tag:#0b2a4a; }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0}
     body{font-family: "Times New Roman", Times, serif; color:var(--ink); background:#fff}
 
     .outer{min-height:100%; display:flex; align-items:flex-start; justify-content:center;}
-    .sheet{width: 100%; max-width: 700px; margin: 18px auto; padding: 4px 8px 8px; /* sem borda para visual mais limpo */}
+    .sheet{width: 100%; max-width: 700px; margin: 18px auto; padding: 4px 8px 8px;}
 
-    header{display:flex; align-items:center; gap:16px; padding:6px 0 12px; border-bottom:1px solid var(--hair)}
-    .logo{width:auto; height:64px; display:flex; align-items:center; justify-content:center; overflow:hidden}
+    /* Cabeçalho minimalista: logo + título + data/código */
+    header{display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:16px; padding:6px 0 10px; border-bottom:1px solid var(--hair)}
+    .logo{height:64px; display:flex; align-items:center}
     .logo img{max-height:64px; width:auto; object-fit:contain; display:block}
-    .title{flex:1; text-align:center}
-    h1{font-size:22px; margin:0 0 2px 0; text-transform:uppercase; letter-spacing:.4px}
-    .sub{font-size:12px; margin-top:2px; color:var(--muted)}
+    .title{text-align:center}
+    h1{font-size:22px; margin:0; text-transform:uppercase; letter-spacing:.4px}
+    .meta{font-size:12px; text-align:right; line-height:1.3; color:var(--muted)}
+    .meta .code{font-variant-numeric: tabular-nums}
 
-    .form{margin-top:10px; border-bottom:1px dashed var(--hair); padding-bottom:10px}
+    /* Faixa de destaque da OBRA */
+    .obra-highlight{display:flex; align-items:center; gap:8px; padding:10px 0;}
+    .obra-label{font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+    .obra-tag{border:1px solid var(--hair); padding:6px 10px; font-size:16px; font-weight:700; letter-spacing:.02em;}
+
+    .form{margin-top:6px; border-bottom:1px dashed var(--hair); padding-bottom:10px}
     .row{display:flex; gap:10px; margin:6px 0}
     .row .field{flex:1}
-
-    /* Campos mais elegantes e sem corretor/autocap */
-    input, textarea{
-      width:100%; border:1px solid var(--hair); padding:8px 10px; font-size:14px; font-family:inherit;
-      outline:none;
-    }
+    input, textarea{width:100%; border:1px solid var(--hair); padding:8px 10px; font-size:14px; font-family:inherit; outline:none}
     input:focus, textarea:focus{border-color:#00000055}
     textarea{min-height:68px; resize:vertical}
 
-    .decl{margin-top:12px; line-height:1.6; font-size:16px; text-align:justify}
+    .decl{margin-top:10px; line-height:1.6; font-size:16px; text-align:justify}
     .decl strong{font-weight:bold}
 
-    /* Assinaturas sóbrias */
     .signatures{margin-top:18px}
     .sig-grid{display:grid; grid-template-columns:1fr 1fr; gap:28px; page-break-inside:avoid}
-    .sig-box{padding:4px 0}
     .sig-title{font-weight:bold; text-transform:uppercase; font-size:13px; margin:0 0 10px 0; text-align:center; color:var(--muted)}
     .sig-line{margin-top:18px}
-    .sig-line .line{border-bottom:1px solid var(--line); height:26px}
+    .sig-line .line{border-bottom:1px solid #000; height:26px}
     .sig-line .below{font-size:12px; text-align:center; margin-top:3px; color:var(--muted)}
     .stamp{border:1px dashed var(--hair); height:70px; margin-top:14px; display:flex; align-items:center; justify-content:center; font-size:11px; text-transform:uppercase; color:var(--muted)}
 
     footer{display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding-top:8px; border-top:1px solid var(--hair); font-size:12px; color:var(--muted)}
 
     .actions{margin:12px auto 0; display:flex; gap:8px; justify-content:center}
-    button{font-family:inherit; border:1px solid var(--line); background:#fff; padding:8px 12px; cursor:pointer}
+    button{font-family:inherit; border:1px solid #000; background:#fff; padding:8px 12px; cursor:pointer}
 
-    /* Impressão */
     .print-only{display:none}
     @media print{
       .actions{display:none}
@@ -70,14 +65,21 @@
   <div class="outer">
     <section class="sheet">
       <header>
-        <div class="logo" title="Atualize o src abaixo com o caminho do seu logo (JPG/PNG) no repositório)">
-          <img id="logo" alt="System Engenharia" src="./assets/logo-system.jpg" />
-        </div>
+        <div class="logo"><img id="logo" alt="System Engenharia" src="./assets/logo-system.jpg" /></div>
         <div class="title">
           <h1>Termo de Entrega</h1>
-          <div class="sub">System Engenharia → Patrimar • <span id="dataHoje"></span> • Nº <span id="numTermo"></span></div>
+        </div>
+        <div class="meta">
+          <div><span id="dataHoje"></span></div>
+          <div class="code">Nº <span id="numTermo"></span></div>
         </div>
       </header>
+
+      <!-- OBRA em destaque para PDF -->
+      <div class="obra-highlight">
+        <div class="obra-label">Obra</div>
+        <div class="obra-tag" id="obraOut">—</div>
+      </div>
 
       <div class="form">
         <div class="row">
@@ -107,23 +109,23 @@
 
       <section class="signatures">
         <div class="sig-grid">
-          <div class="sig-box">
-            <div class="sig-title">Contratante (Patrimar)</div>
+          <div>
+            <div class="sig-title">Contratante</div>
             <div class="sig-line"><div class="line"></div><div class="below">ASSINATURA</div></div>
             <div class="sig-line"><div class="line"></div><div class="below">NOME LEGÍVEL</div></div>
             <div class="sig-line"><div class="line"></div><div class="below">CPF / RG</div></div>
             <div class="sig-line"><div class="line"></div><div class="below">CARGO / SETOR</div></div>
             <div class="sig-line"><div class="line"></div><div class="below">DATA</div></div>
-            <div class="stamp">CARIMBO — CONTRATANTE</div>
+            <div class="stamp">CARIMBO</div>
           </div>
-          <div class="sig-box">
-            <div class="sig-title">Contratada (System Engenharia)</div>
+          <div>
+            <div class="sig-title">Contratada</div>
             <div class="sig-line"><div class="line"></div><div class="below">ASSINATURA</div></div>
             <div class="sig-line"><div class="line"></div><div class="below">NOME LEGÍVEL</div></div>
             <div class="sig-line"><div class="line"></div><div class="below">CPF / RG</div></div>
             <div class="sig-line"><div class="line"></div><div class="below">CARGO</div></div>
             <div class="sig-line"><div class="line"></div><div class="below">DATA</div></div>
-            <div class="stamp">CARIMBO — CONTRATADA</div>
+            <div class="stamp">CARIMBO</div>
           </div>
         </div>
       </section>
@@ -159,6 +161,9 @@
         const esc   = document.getElementById('escopo').value.trim();
         const obs   = document.getElementById('obs').value.trim();
 
+        // Atualiza destaque Obra
+        document.getElementById('obraOut').textContent = obra || '—';
+
         const partes = [];
         if (bloco) partes.push(`${bloco}`);
         if (area)  partes.push(`${area}`);
@@ -168,7 +173,7 @@
         const escTxt  = esc  ? `<strong>${esc}</strong>` : 'escopo descrito';
         const obsTxt  = obs  ? ` ${obs}` : '';
 
-        const frase = `Declaro que, na data de <strong>${fmtLong.format(new Date())}</strong>, a <strong>System Engenharia</strong> entregou à <strong>Patrimar</strong> os serviços de ${escTxt}${localTxt}${obraTxt}.${obsTxt}`;
+        const frase = `Declaro que, na data de <strong>${fmtLong.format(new Date())}</strong>, os serviços de ${escTxt}${localTxt}${obraTxt} foram entregues conforme descrito.`;
         document.getElementById('declaracao').innerHTML = frase;
       }
 
@@ -182,10 +187,9 @@
     function limpar(){
       ['obra','bloco','area','escopo','obs'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
       const fmtLong = new Intl.DateTimeFormat('pt-BR',{dateStyle:'full'});
-      document.getElementById('declaracao').innerHTML = `Declaro que, na data de <strong>${fmtLong.format(new Date())}</strong>, a <strong>System Engenharia</strong> entregou à <strong>Patrimar</strong> os serviços descritos acima.`;
+      document.getElementById('obraOut').textContent = '—';
+      document.getElementById('declaracao').innerHTML = `Declaro que, na data de <strong>${fmtLong.format(new Date())}</strong>, os serviços descritos acima foram entregues.`;
     }
   </script>
 </body>
 </html>
-
-
