@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Termo de Entrega — Via Única (A4 v10 • Revisão com IA)</title>
+  <title>Termo de Entrega — Via Única (A4 v11 • Correção simples offline)</title>
   <style>
     /* A4, estilo clássico (anos 90), impressão limpa e harmonia visual */
     @page { size: A4; margin: 15mm; }
@@ -51,7 +51,7 @@
     /* Impressão */
     .print-only{display:none}
     @media print{
-      .actions{display:none}
+      .actions, .correcoes{display:none}
       .sheet{border:0; margin:0; padding:0}
       input, textarea{border-color:transparent}
       .print-only{display:inline}
@@ -136,17 +136,15 @@
         <div class="print-only">(Via única — imprima 2 cópias)</div>
       </footer>
 
-      <!-- Revisão com IA (OpenAI) -->
-      <section style="margin-top:14px; border:1px solid var(--line); padding:10px">
-        <div style="font-weight:bold; text-transform:uppercase; font-size:13px; margin-bottom:6px">Revisar texto com IA (opcional)</div>
-        <div style="font-size:12px; color:var(--muted); margin-bottom:8px">Corrige gramática e clareza do parágrafo de declaração em PT‑BR. <em>Use chave de API apenas para testes — em produção utilize um backend/proxy.</em></div>
+      <!-- Correção simples (offline) -->
+      <section class="correcoes" style="margin-top:14px; border:1px solid var(--line); padding:10px">
+        <div style="font-weight:bold; text-transform:uppercase; font-size:13px; margin-bottom:6px">Correção rápida de texto (offline)</div>
+        <div style="font-size:12px; color:var(--muted); margin-bottom:8px">Ajusta espaços, pontuação, capitalização inicial e garante ponto final. O navegador também faz verificação ortográfica básica nesta área.</div>
         <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:8px">
-          <input id="openaiKey" type="password" placeholder="OPENAI_API_KEY (temporário)" style="flex:1; min-width:260px; border:1px solid var(--line); padding:6px 8px; font-family:inherit"/>
-          <button id="btnIaCorrigir" style="border:1px solid var(--line); background:#fff; padding:8px 12px; cursor:pointer">Corrigir com IA</button>
-          <button id="btnIaAplicar" disabled style="border:1px solid var(--line); background:#fff; padding:8px 12px; cursor:pointer">Substituir no documento</button>
+          <button id="btnCorrigirSimples" style="border:1px solid var(--line); background:#fff; padding:8px 12px; cursor:pointer">Corrigir texto (simples)</button>
+          <button id="btnAplicarSimples" disabled style="border:1px solid var(--line); background:#fff; padding:8px 12px; cursor:pointer">Substituir no documento</button>
         </div>
-        <textarea id="iaSaida" placeholder="A versão revisada aparecerá aqui" style="width:100%; min-height:80px; border:1px solid var(--line); padding:8px 10px; font-family:inherit"></textarea>
-        <div id="iaStatus" style="font-size:12px; color:var(--muted); margin-top:6px"></div>
+        <textarea id="saidaSimples" placeholder="A versão corrigida aparecerá aqui" style="width:100%; min-height:80px; border:1px solid var(--line); padding:8px 10px; font-family:inherit" spellcheck="true"></textarea>
       </section>
 
       <div class="actions">
@@ -170,12 +168,12 @@
 
       function montar(){
         const obra  = document.getElementById('obra').value.trim();
-        const bloco = document.getElementById('bloco').value.trim(); // pode conter "Bloco 2", "Torre B", "Subsolo", "Reservatório" etc.
+        const bloco = document.getElementById('bloco').value.trim(); // "Bloco 2", "Torre B", "Subsolo", "Reservatório" etc.
         const area  = document.getElementById('area').value.trim();
         const esc   = document.getElementById('escopo').value.trim();
         const obs   = document.getElementById('obs').value.trim();
 
-        // Partes de localização SEM prefixos automáticos: usamos exatamente o que o usuário digitar
+        // Partes de localização SEM prefixos automáticos: usamos exatamente o que for digitado
         const partes = [];
         if (bloco) partes.push(`${bloco}`);
         if (area)  partes.push(`${area}`);
@@ -196,54 +194,51 @@
       montar();
     })();
 
+    // === Correção simples (offline) ===
+    function htmlParaMarkdownNegrito(html){
+      const tmp = document.createElement('div'); tmp.innerHTML = html;
+      tmp.querySelectorAll('strong').forEach(el=>{ el.outerHTML = `**${el.textContent}**`; });
+      return tmp.textContent;
+    }
+    function markdownParaHtmlNegrito(text){
+      return text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+    }
+    function corrigirSimplesTexto(txt){
+      let t = txt;
+      t = t.replace(/\s+/g,' ').trim(); // espaços duplicados
+      t = t.replace(/\s+([,;:\.!\?])/g,'$1'); // espaço antes da pontuação
+      t = t.replace(/([,;:])(?!\s)/g,'$1 '); // espaço após vírgula/;
+      t = t.replace(/\s{2,}/g,' '); // colapsar espaços
+      t = t.replace(/^([a-zà-ú])/i, (m)=> m.toUpperCase()); // capitalizar 1ª letra
+      t = t.replace(/([\.\!\?]\s+)([a-zà-ú])/g, (m, g1, g2)=> g1 + g2.toUpperCase()); // após ponto
+      if(!/[\.\!\?]$/.test(t)) t += '.'; // garantir ponto final
+      return t;
+    }
+    function acionarCorrecaoSimples(){
+      const html = document.getElementById('declaracao').innerHTML;
+      const plain = htmlParaMarkdownNegrito(html);
+      const corrigido = corrigirSimplesTexto(plain);
+      const saida = document.getElementById('saidaSimples');
+      if(saida){ saida.value = corrigido; }
+      const btn = document.getElementById('btnAplicarSimples');
+      if(btn){ btn.disabled = !corrigido; }
+    }
+    function aplicarCorrecaoSimples(){
+      const out = document.getElementById('saidaSimples')?.value.trim();
+      if(!out) return;
+      document.getElementById('declaracao').innerHTML = markdownParaHtmlNegrito(out);
+    }
+    window.addEventListener('DOMContentLoaded', ()=>{
+      const b1 = document.getElementById('btnCorrigirSimples'); if(b1) b1.addEventListener('click', acionarCorrecaoSimples);
+      const b2 = document.getElementById('btnAplicarSimples'); if(b2) b2.addEventListener('click', aplicarCorrecaoSimples);
+    });
+
     function limpar(){
       ['obra','bloco','area','escopo','obs'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
       const fmtLong = new Intl.DateTimeFormat('pt-BR',{dateStyle:'full'});
       document.getElementById('declaracao').innerHTML = `Declaro que, na data de <strong>${fmtLong.format(new Date())}</strong>, a <strong>System Engenharia</strong> entregou à <strong>Patrimar</strong> os serviços descritos acima.`;
     }
-  // === Integração OpenAI: Revisão da declaração ===
-    async function revisarComIA(){
-      const key = document.getElementById('openaiKey').value.trim();
-      const status = document.getElementById('iaStatus');
-      const out = document.getElementById('iaSaida');
-      if(!key){ status.textContent = 'Informe sua OPENAI_API_KEY para testar localmente.'; return; }
-      const html = document.getElementById('declaracao').innerHTML;
-      // Converte HTML simples para texto plano mantendo negritos como ** **
-      const tmp = document.createElement('div'); tmp.innerHTML = html;
-      tmp.querySelectorAll('strong').forEach(el=>{ el.outerHTML = `**${el.textContent}**`; });
-      const plain = tmp.textContent;
-      status.textContent = 'Enviando para o modelo...';
-      try{
-        const resp = await fetch('https://api.openai.com/v1/responses',{
-          method:'POST',
-          headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},
-          body: JSON.stringify({
-            model: 'gpt-4o-mini',
-            input: `Revise o texto a seguir (português do Brasil), corrija gramática e fluidez, mantenha sentido jurídico e devolva APENAS o parágrafo revisado, sem comentários. Texto:
-
-${plain}`
-          })
-        });
-        if(!resp.ok){ const t = await resp.text(); throw new Error(`Erro ${resp.status}: ${t}`); }
-        const data = await resp.json();
-        // Responses API retorna output_text agregado em alguns SDKs; aqui tentamos campos comuns
-        const revised = (data.output_text) || (data.output && data.output[0] && data.output[0].content && data.output[0].content[0] && data.output[0].content[0].text) || (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '';
-        out.value = revised.trim();
-        document.getElementById('btnIaAplicar').disabled = !out.value;
-        status.textContent = 'Revisão concluída. Confira e clique em "Substituir no documento" se estiver ok.';
-      }catch(e){
-        status.textContent = 'Falha ao consultar o modelo: '+ e.message;
-      }
-    }
-    function aplicarRevisao(){
-      const out = document.getElementById('iaSaida').value.trim();
-      if(!out) return;
-      // Mantém negritos simples transformando **texto** em <strong>
-      const html = out.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
-      document.getElementById('declaracao').innerHTML = html;
-    }
-    document.getElementById('btnIaCorrigir').addEventListener('click', revisarComIA);
-    document.getElementById('btnIaAplicar').addEventListener('click', aplicarRevisao);
   </script>
 </body>
 </html>
+
