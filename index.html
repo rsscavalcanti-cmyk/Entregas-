@@ -3,47 +3,54 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Termo de Entrega — Via Única (A4 v11 • Correção simples offline)</title>
+  <title>Termo de Entrega — Via Única (A4 v14 • Elegante)</title>
   <style>
-    /* A4, estilo clássico (anos 90), impressão limpa e harmonia visual */
+    /* A4, estilo clássico, impressão limpa */
     @page { size: A4; margin: 15mm; }
 
-    :root{ --ink:#111; --line:#000; --muted:#333; }
+    :root{
+      --ink:#111; --line:#000; --muted:#333; --hair:#00000026;
+    }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0}
     body{font-family: "Times New Roman", Times, serif; color:var(--ink); background:#fff}
 
     .outer{min-height:100%; display:flex; align-items:flex-start; justify-content:center;}
-    .sheet{width: 100%; max-width: 700px; margin: 18px auto; padding: 16px 24px 14px; border:1px solid var(--line)}
+    .sheet{width: 100%; max-width: 700px; margin: 18px auto; padding: 4px 8px 8px; /* sem borda para visual mais limpo */}
 
-    header{display:flex; align-items:center; gap:16px; padding-bottom:10px; border-bottom:1px solid var(--line)}
-    .logo{width:104px; height:104px; border:1px solid var(--line); display:flex; align-items:center; justify-content:center; overflow:hidden}
-    .logo img{max-width:100%; max-height:100%; object-fit:contain}
+    header{display:flex; align-items:center; gap:16px; padding:6px 0 12px; border-bottom:1px solid var(--hair)}
+    .logo{width:auto; height:64px; display:flex; align-items:center; justify-content:center; overflow:hidden}
+    .logo img{max-height:64px; width:auto; object-fit:contain; display:block}
     .title{flex:1; text-align:center}
-    h1{font-size:22px; margin:0 0 2px 0; text-transform:uppercase; letter-spacing:.5px}
-    .sub{font-size:12px; margin-top:2px}
+    h1{font-size:22px; margin:0 0 2px 0; text-transform:uppercase; letter-spacing:.4px}
+    .sub{font-size:12px; margin-top:2px; color:var(--muted)}
 
-    .form{margin-top:10px; border-bottom:1px dashed var(--line); padding-bottom:10px}
+    .form{margin-top:10px; border-bottom:1px dashed var(--hair); padding-bottom:10px}
     .row{display:flex; gap:10px; margin:6px 0}
     .row .field{flex:1}
-    /* Inputs sem labels; apenas placeholders */
-    input, textarea{width:100%; border:1px solid var(--line); padding:8px 10px; font-size:14px; font-family:inherit}
+
+    /* Campos mais elegantes e sem corretor/autocap */
+    input, textarea{
+      width:100%; border:1px solid var(--hair); padding:8px 10px; font-size:14px; font-family:inherit;
+      outline:none;
+    }
+    input:focus, textarea:focus{border-color:#00000055}
     textarea{min-height:68px; resize:vertical}
 
     .decl{margin-top:12px; line-height:1.6; font-size:16px; text-align:justify}
     .decl strong{font-weight:bold}
 
+    /* Assinaturas sóbrias */
     .signatures{margin-top:18px}
-    .sig-grid{display:grid; grid-template-columns:1fr 1fr; gap:24px}
-    .sig-box{border:1px solid var(--line); padding:12px; min-height:168px}
-    .sig-title{font-weight:bold; text-transform:uppercase; font-size:14px; margin-bottom:8px; text-align:center}
+    .sig-grid{display:grid; grid-template-columns:1fr 1fr; gap:28px; page-break-inside:avoid}
+    .sig-box{padding:4px 0}
+    .sig-title{font-weight:bold; text-transform:uppercase; font-size:13px; margin:0 0 10px 0; text-align:center; color:var(--muted)}
+    .sig-line{margin-top:18px}
+    .sig-line .line{border-bottom:1px solid var(--line); height:26px}
+    .sig-line .below{font-size:12px; text-align:center; margin-top:3px; color:var(--muted)}
+    .stamp{border:1px dashed var(--hair); height:70px; margin-top:14px; display:flex; align-items:center; justify-content:center; font-size:11px; text-transform:uppercase; color:var(--muted)}
 
-    .line{border-bottom:1px solid var(--line); height:26px; margin-top:18px}
-    .below{font-size:12px; text-align:center; margin-top:3px}
-
-    .stamp{border:1px dashed var(--line); height:84px; margin-top:16px; display:flex; align-items:center; justify-content:center; font-size:12px; text-transform:uppercase; font-weight:700}
-
-    footer{display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding-top:8px; border-top:1px solid var(--line); font-size:12px}
+    footer{display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding-top:8px; border-top:1px solid var(--hair); font-size:12px; color:var(--muted)}
 
     .actions{margin:12px auto 0; display:flex; gap:8px; justify-content:center}
     button{font-family:inherit; border:1px solid var(--line); background:#fff; padding:8px 12px; cursor:pointer}
@@ -51,10 +58,11 @@
     /* Impressão */
     .print-only{display:none}
     @media print{
-      .actions, .correcoes{display:none}
-      .sheet{border:0; margin:0; padding:0}
+      .actions{display:none}
+      .sheet{margin:0; padding:0}
       input, textarea{border-color:transparent}
       .print-only{display:inline}
+      .sig-grid{break-inside:avoid}
     }
   </style>
 </head>
@@ -62,8 +70,7 @@
   <div class="outer">
     <section class="sheet">
       <header>
-        <div class="logo" title="Atualize o src abaixo com o caminho do seu logo (JPG/PNG) no repositório">
-          <!-- Atualize o caminho do logo, ex.: ./assets/logo-system.jpg -->
+        <div class="logo" title="Atualize o src abaixo com o caminho do seu logo (JPG/PNG) no repositório)">
           <img id="logo" alt="System Engenharia" src="./assets/logo-system.jpg" />
         </div>
         <div class="title">
@@ -75,23 +82,23 @@
       <div class="form">
         <div class="row">
           <div class="field">
-            <input id="obra" placeholder="Empreendimento / Obra — Ex.: Atlântico Golf" />
+            <input id="obra" placeholder="Empreendimento / Obra — Ex.: Atlântico Golf" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" />
           </div>
           <div class="field" style="max-width:220px">
-            <input id="bloco" placeholder="Bloco / Torre / Local — Ex.: Torre B / Subsolo / Reservatório" />
+            <input id="bloco" placeholder="Bloco / Torre / Local — Ex.: Torre B / Subsolo / Reservatório" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" />
           </div>
           <div class="field" style="max-width:220px">
-            <input id="area" placeholder="Área / Unidade / Ambiente (opcional) — Ex.: Casa de Máquinas / Apto 101" />
+            <input id="area" placeholder="Área / Unidade / Ambiente (opcional) — Ex.: Casa de Máquinas / Apto 101" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" />
           </div>
         </div>
         <div class="row">
           <div class="field">
-            <textarea id="escopo" placeholder="Serviços entregues (descrição breve) — Ex.: redes de recalque de água potável para os blocos 1, 2 e 3"></textarea>
+            <textarea id="escopo" placeholder="Serviços entregues (descrição breve) — Ex.: redes de recalque de água potável para os blocos 1, 2 e 3" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
           </div>
         </div>
         <div class="row">
           <div class="field">
-            <input id="obs" placeholder="Observações — Ex.: Conforme projeto e memorial" />
+            <input id="obs" placeholder="Observações — Ex.: Conforme projeto e memorial" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" />
           </div>
         </div>
       </div>
@@ -102,30 +109,20 @@
         <div class="sig-grid">
           <div class="sig-box">
             <div class="sig-title">Contratante (Patrimar)</div>
-            <div class="line"></div>
-            <div class="below">ASSINATURA</div>
-            <div class="line"></div>
-            <div class="below">NOME LEGÍVEL</div>
-            <div class="line"></div>
-            <div class="below">CPF / RG</div>
-            <div class="line"></div>
-            <div class="below">CARGO / SETOR</div>
-            <div class="line"></div>
-            <div class="below">DATA</div>
+            <div class="sig-line"><div class="line"></div><div class="below">ASSINATURA</div></div>
+            <div class="sig-line"><div class="line"></div><div class="below">NOME LEGÍVEL</div></div>
+            <div class="sig-line"><div class="line"></div><div class="below">CPF / RG</div></div>
+            <div class="sig-line"><div class="line"></div><div class="below">CARGO / SETOR</div></div>
+            <div class="sig-line"><div class="line"></div><div class="below">DATA</div></div>
             <div class="stamp">CARIMBO — CONTRATANTE</div>
           </div>
           <div class="sig-box">
             <div class="sig-title">Contratada (System Engenharia)</div>
-            <div class="line"></div>
-            <div class="below">ASSINATURA</div>
-            <div class="line"></div>
-            <div class="below">NOME LEGÍVEL</div>
-            <div class="line"></div>
-            <div class="below">CPF / RG</div>
-            <div class="line"></div>
-            <div class="below">CARGO</div>
-            <div class="line"></div>
-            <div class="below">DATA</div>
+            <div class="sig-line"><div class="line"></div><div class="below">ASSINATURA</div></div>
+            <div class="sig-line"><div class="line"></div><div class="below">NOME LEGÍVEL</div></div>
+            <div class="sig-line"><div class="line"></div><div class="below">CPF / RG</div></div>
+            <div class="sig-line"><div class="line"></div><div class="below">CARGO</div></div>
+            <div class="sig-line"><div class="line"></div><div class="below">DATA</div></div>
             <div class="stamp">CARIMBO — CONTRATADA</div>
           </div>
         </div>
@@ -135,17 +132,6 @@
         <div>Gerado em <span id="gerado"></span></div>
         <div class="print-only">(Via única — imprima 2 cópias)</div>
       </footer>
-
-      <!-- Correção simples (offline) -->
-      <section class="correcoes" style="margin-top:14px; border:1px solid var(--line); padding:10px">
-        <div style="font-weight:bold; text-transform:uppercase; font-size:13px; margin-bottom:6px">Correção rápida de texto (offline)</div>
-        <div style="font-size:12px; color:var(--muted); margin-bottom:8px">Ajusta espaços, pontuação, capitalização inicial e garante ponto final. O navegador também faz verificação ortográfica básica nesta área.</div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:8px">
-          <button id="btnCorrigirSimples" style="border:1px solid var(--line); background:#fff; padding:8px 12px; cursor:pointer">Corrigir texto (simples)</button>
-          <button id="btnAplicarSimples" disabled style="border:1px solid var(--line); background:#fff; padding:8px 12px; cursor:pointer">Substituir no documento</button>
-        </div>
-        <textarea id="saidaSimples" placeholder="A versão corrigida aparecerá aqui" style="width:100%; min-height:80px; border:1px solid var(--line); padding:8px 10px; font-family:inherit" spellcheck="true"></textarea>
-      </section>
 
       <div class="actions">
         <button onclick="window.print()">Imprimir / Salvar PDF</button>
@@ -168,12 +154,11 @@
 
       function montar(){
         const obra  = document.getElementById('obra').value.trim();
-        const bloco = document.getElementById('bloco').value.trim(); // "Bloco 2", "Torre B", "Subsolo", "Reservatório" etc.
+        const bloco = document.getElementById('bloco').value.trim();
         const area  = document.getElementById('area').value.trim();
         const esc   = document.getElementById('escopo').value.trim();
         const obs   = document.getElementById('obs').value.trim();
 
-        // Partes de localização SEM prefixos automáticos: usamos exatamente o que for digitado
         const partes = [];
         if (bloco) partes.push(`${bloco}`);
         if (area)  partes.push(`${area}`);
@@ -194,45 +179,6 @@
       montar();
     })();
 
-    // === Correção simples (offline) ===
-    function htmlParaMarkdownNegrito(html){
-      const tmp = document.createElement('div'); tmp.innerHTML = html;
-      tmp.querySelectorAll('strong').forEach(el=>{ el.outerHTML = `**${el.textContent}**`; });
-      return tmp.textContent;
-    }
-    function markdownParaHtmlNegrito(text){
-      return text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
-    }
-    function corrigirSimplesTexto(txt){
-      let t = txt;
-      t = t.replace(/\s+/g,' ').trim(); // espaços duplicados
-      t = t.replace(/\s+([,;:\.!\?])/g,'$1'); // espaço antes da pontuação
-      t = t.replace(/([,;:])(?!\s)/g,'$1 '); // espaço após vírgula/;
-      t = t.replace(/\s{2,}/g,' '); // colapsar espaços
-      t = t.replace(/^([a-zà-ú])/i, (m)=> m.toUpperCase()); // capitalizar 1ª letra
-      t = t.replace(/([\.\!\?]\s+)([a-zà-ú])/g, (m, g1, g2)=> g1 + g2.toUpperCase()); // após ponto
-      if(!/[\.\!\?]$/.test(t)) t += '.'; // garantir ponto final
-      return t;
-    }
-    function acionarCorrecaoSimples(){
-      const html = document.getElementById('declaracao').innerHTML;
-      const plain = htmlParaMarkdownNegrito(html);
-      const corrigido = corrigirSimplesTexto(plain);
-      const saida = document.getElementById('saidaSimples');
-      if(saida){ saida.value = corrigido; }
-      const btn = document.getElementById('btnAplicarSimples');
-      if(btn){ btn.disabled = !corrigido; }
-    }
-    function aplicarCorrecaoSimples(){
-      const out = document.getElementById('saidaSimples')?.value.trim();
-      if(!out) return;
-      document.getElementById('declaracao').innerHTML = markdownParaHtmlNegrito(out);
-    }
-    window.addEventListener('DOMContentLoaded', ()=>{
-      const b1 = document.getElementById('btnCorrigirSimples'); if(b1) b1.addEventListener('click', acionarCorrecaoSimples);
-      const b2 = document.getElementById('btnAplicarSimples'); if(b2) b2.addEventListener('click', aplicarCorrecaoSimples);
-    });
-
     function limpar(){
       ['obra','bloco','area','escopo','obs'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
       const fmtLong = new Intl.DateTimeFormat('pt-BR',{dateStyle:'full'});
@@ -241,4 +187,5 @@
   </script>
 </body>
 </html>
+
 
